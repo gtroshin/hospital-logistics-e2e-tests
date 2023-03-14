@@ -1,0 +1,10 @@
+{
+    "pageLoadTimeout": 5000,
+    "assertionTimeout": 10000,
+    "selectorTimeout": 10000,
+    "userVariables": {
+        "baseURL": "https://lionfish-app-service-jg4shv4z-3jlq6.ondigitalocean.app/",
+        "username": "user",
+        "password": "user"
+    }
+}
