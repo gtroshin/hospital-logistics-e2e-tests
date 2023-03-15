@@ -1,4 +1,4 @@
-import { baseUrl, username, password, randomString } from "../utilities/utilities";
+import { baseUrl, username, password, randomString, addNewEmployee } from "../utilities/utilities";
 import mainPage from "../pages/main.page";
 import employeesPage from "../pages/employees.page";
 
@@ -29,4 +29,13 @@ test('I should be able to add a new employee to the system with all required inf
     });
 
     await employeesPage.verifyEmployee(t.ctx.firstName, t.ctx.lastName, t.ctx.email);
+});
+
+test.only('I should be able to update the information of an existing employee and verify that the information is updated correctly', async t => {
+    await addNewEmployee({
+        firstName: t.ctx.firstName,
+        lastName: t.ctx.lastName,
+        email: t.ctx.email,
+        phoneNumber: '+46769099901'
+    })
 });
