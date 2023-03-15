@@ -20,6 +20,8 @@ export async function scrollDownUntilExists(targetElement) {
       await scrollDown();
       await t.wait(300); // Adjust the waiting time if needed
   }
+
+  await t.scrollIntoView(targetElement)
 }
 
 export function baseUrl() {
@@ -105,6 +107,7 @@ export async function addNewEmployee({
     };
 
     const createdEmployee = await createEmployee(token, employeeData);
+    await t.eval(() => location.reload(true));
   } catch (error) {
     console.error('Error:', error.message);
   }

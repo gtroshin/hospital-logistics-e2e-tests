@@ -1,14 +1,14 @@
-import { baseUrl, username, password, randomString, addNewEmployee } from "../utilities/utilities";
+import { baseUrl, username, password, randomString, addNewEmployee, scrollDownUntilExists } from "../utilities/utilities";
 import mainPage from "../pages/main.page";
 import employeesPage from "../pages/employees.page";
 
 fixture `As the manager`
     .page `${baseUrl()}`
     .beforeEach(async t => {
-        let random = randomString();
-        t.ctx.firstName = 'John' + random;
-        t.ctx.lastName = 'Doe' + random;
-        t.ctx.email = random + '@test.com';
+        t.ctx.random = randomString();
+        t.ctx.firstName = 'John' +  t.ctx.random;
+        t.ctx.lastName = 'Doe' +  t.ctx.random;
+        t.ctx.email = t.ctx.random + '@test.com';
 
         await mainPage.signIn(username(), password());
     });
@@ -31,12 +31,28 @@ test('I should be able to add a new employee to the system with all required inf
     await employeesPage.verifyEmployee(t.ctx.firstName, t.ctx.lastName, t.ctx.email);
 });
 
-test.only('I should be able to update the information of an existing employee and verify that the information is updated correctly', async t => {
+test('I should be able to update the information of an existing employee and verify that the information is updated correctly', async t => {
+    let firstName = 'API' + t.ctx.firstName
+    let lastName = 'API' + t.ctx.lastName
+
     // Programmatically create a new employee
     await addNewEmployee({
-        firstName: t.ctx.firstName,
-        lastName: t.ctx.lastName,
+        firstName: firstName,
+        lastName: lastName,
         email: t.ctx.email,
         phoneNumber: '+46769099901'
     })
+
+    await mainPage.openEntity('employee')
+
+    await employeesPage.verifyEmployee(firstName, lastName, t.ctx.email);
+
+    let newFirstName = firstName + '_new'
+
+    await employeesPage.updateEmployee({
+        email: t.ctx.email,
+        firstName: newFirstName
+    });
+
+    await employeesPage.verifyEmployee(newFirstName, lastName, t.ctx.email);
 });

@@ -19,8 +19,8 @@ class Employees {
         this.cancelSaveButton = Selector('#cancel-save');
         this.rowContaining = (firstName, lastName, email) => XPathSelector(
             `//tr[./td[contains(., '${firstName}')] and ./td[contains(., '${lastName}')] and ./td[contains(.,'${email}')]]`);
-        this.rowActon = (email, action) => XPathSelector(
-            `//tr[./td[contains(., '${email}')]]//span[@jhitranslate='entity.action.${action}']`);
+        this.rowActon = ({email, action}) => XPathSelector(
+            `//tr[./td[contains(., '${email}')]]//button[./span[@jhitranslate='entity.action.${action}']]`);
     }
 
     async hireDate(field, text) {
@@ -81,9 +81,15 @@ class Employees {
     }
 
     async updateEmployee({email, firstName, lastName, phoneNumber, save=true}) {
+        // element becomes hidden or is removed from the DOM between the visibility check and the click action
+        // to avoid this issue, we can store the result in const
+        const editButton = this.rowActon({email: email, action: 'edit'}) 
+
         await t
-            .expect(this.rowActon(email, 'edit').visible).ok()
-            .click(this.rowActon(email, 'edit'))
+            .expect(editButton.exists).ok({ timeout: 10000 })
+            .expect(editButton.visible).ok()
+            .hover(editButton)
+            .click(editButton)
     
         if (firstName !== undefined) {
             await t
