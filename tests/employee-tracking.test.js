@@ -32,6 +32,7 @@ test('I should be able to add a new employee to the system with all required inf
 });
 
 test.only('I should be able to update the information of an existing employee and verify that the information is updated correctly', async t => {
+    // Programmatically create a new employee
     await addNewEmployee({
         firstName: t.ctx.firstName,
         lastName: t.ctx.lastName,

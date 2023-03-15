@@ -17,9 +17,10 @@ class Employees {
         this.managerSelector = Selector('#field_manager');
         this.saveButton = Selector('#save-entity');
         this.cancelSaveButton = Selector('#cancel-save');
-        // this.rowContaining = (x) => Selector('jhi-main td').withText(x);      // //tr[./td[contains(.,'JohnhjVYHCUCLA')] and ./td[contains(.,'DoehjVYHCUCLA')] and ./td[contains(.,'hjVYHCUCLA@test.com')]]
         this.rowContaining = (firstName, lastName, email) => XPathSelector(
             `//tr[./td[contains(., '${firstName}')] and ./td[contains(., '${lastName}')] and ./td[contains(.,'${email}')]]`);
+        this.rowActon = (email, action) => XPathSelector(
+            `//tr[./td[contains(., '${email}')]]//span[@jhitranslate='entity.action.${action}']`);
     }
 
     async hireDate(field, text) {
@@ -78,6 +79,37 @@ class Employees {
                 .click(this.saveButton)
         }
     }
+
+    async updateEmployee({email, firstName, lastName, phoneNumber, save=true}) {
+        await t
+            .expect(this.rowActon(email, 'edit').visible).ok()
+            .click(this.rowActon(email, 'edit'))
+    
+        if (firstName !== undefined) {
+            await t
+                .expect(this.firstNameInput.visible).ok()
+                .typeText(this.firstNameInput, firstName, { replace: true })
+        }
+    
+        if (lastName !== undefined) {
+            await t
+                .expect(this.lastNameInput.visible).ok()
+                .typeText(this.lastNameInput, lastName, { replace: true })
+        }
+    
+        if (phoneNumber !== undefined) {
+            await t
+                .expect(this.phoneNumberInput.visible).ok()
+                .typeText(this.phoneNumberInput, phoneNumber, { replace: true })
+        }
+        
+        if (save) {
+            await t
+                .expect(this.saveButton.visible).ok()
+                .click(this.saveButton)
+        }
+    }
+    
 
     async verifyEmployee(firstName, lastName, email) {
         await scrollDownUntilExists(this.rowContaining(firstName, lastName, email));
