@@ -3,7 +3,7 @@
     "assertionTimeout": 10000,
     "selectorTimeout": 10000,
     "userVariables": {
-        "baseURL": "https://lionfish-app-service-jg4shv4z-3jlq6.ondigitalocean.app/",
+        "baseURL": "http://localhost:8080/",
         "username": "user",
         "password": "user"
     }

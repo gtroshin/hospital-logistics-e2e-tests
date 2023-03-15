@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Hospital logistics end-to-end tests",
   "scripts": {
-    "test-local": "source .env && testcafe \"chrome --no-default-browser-check --lang=en-US --disable-plugins --disable-infobars\" -c 1 --debug-on-fail tests/*",
+    "test-local": "testcafe \"chrome --no-default-browser-check --lang=en-US --disable-plugins --disable-infobars\" -c 1 --debug-on-fail tests/*",
     "test-headless-chrome": "testcafe \"chrome:headless:emulation:1400;height=900 --no-default-browser-check --lang=en-US --disable-plugins --disable-infobars\" -r spec,xunit:test_results/report.xml -c 3 -S -s screenshots_of_fails --video videos_of_fails --video-options failedOnly=true tests/*",
     "test-headless-firefox": "testcafe \"firefox:headless\" -r spec,xunit:test_results/report.xml -c 3 -S -s screenshots_of_fails --video videos_of_fails --video-options failedOnly=true tests/*"
   },

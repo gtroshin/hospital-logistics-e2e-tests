@@ -3,6 +3,8 @@ import { t, Selector } from 'testcafe';
 class Main {
     constructor () {
         this.accountMenu = Selector('#account-menu');
+        this.entityMenu = Selector('#entity-menu');
+        this.entityItem = (x) => Selector('a.dropdown-item').withAttribute('href', '/' + x);
         this.loginButton = Selector('#login');
         this.usernameInput = Selector('#username');
         this.passwordInput = Selector('#password');
@@ -32,6 +34,14 @@ class Main {
             .typeText(this.passwordInput, password)
             .expect(this.submitLoginFromButton.visible).ok()
             .click(this.submitLoginFromButton)
+    }
+
+    async openEntity(entity) {
+        await t
+            .expect(this.entityMenu.visible).ok()
+            .click(this.entityMenu)
+            .expect(this.entityItem(entity).visible).ok()
+            .click(this.entityItem(entity))
     }
 }
 
