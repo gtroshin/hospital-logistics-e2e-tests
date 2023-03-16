@@ -11,11 +11,13 @@ import mainPage from "../pages/main.page";
 import employeesPage from "../pages/employees.page";
 
 fixture`As a manager`.page`${baseUrl()}`.beforeEach(async (t) => {
+	// Generate random values for each test run and save them to the test context
 	t.ctx.random = randomString();
 	t.ctx.firstName = "John" + t.ctx.random;
 	t.ctx.lastName = "Doe" + t.ctx.random;
 	t.ctx.email = t.ctx.random + "@test.com";
 
+	// Sign in to the application before each test
 	await mainPage.signIn(username(), password());
 });
 
@@ -24,6 +26,7 @@ test.meta("opt", "true")(
 	async (t) => {
 		await mainPage.openEntity("employee");
 
+		// Create a new employee with the generated values and check that it was created successfully
 		await employeesPage.createEmployee({
 			firstName: t.ctx.firstName,
 			lastName: t.ctx.lastName,
@@ -59,7 +62,8 @@ test("I should be able to update the information of an existing employee and ver
 	await mainPage.openEntity("employee");
 
 	await employeesPage.verifyEmployee(firstName, lastName, t.ctx.email);
-
+	
+	// Update the employee's first name and verify that the update was successful
 	let newFirstName = firstName + "_new";
 
 	await employeesPage.updateEmployee({
@@ -88,10 +92,12 @@ test("I should be able to delete an employee from the system and verify that the
 
 	await employeesPage.verifyEmployee(firstName, lastName, t.ctx.email);
 
+	// Delete the employee and verify that the delete was successful
 	await employeesPage.deleteEmployee({
 		email: t.ctx.email,
 	});
 
+	// Verify that the employee was successfully deleted from the system
 	const statusCode = await getEmployeeById(employeeId);
 
 	await t.expect(statusCode).eql(404, "Employee was not deleted");
