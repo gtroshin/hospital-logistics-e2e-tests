@@ -1,3 +1,4 @@
+import { userVariables} from "testcafe";
 import {
 	baseUrl,
 	username,
@@ -27,12 +28,12 @@ test.meta("opt", "true")(
 			firstName: t.ctx.firstName,
 			lastName: t.ctx.lastName,
 			email: t.ctx.email,
-			phoneNumber: "+46769099901",
-			hireDate: "2021-03-15T11:50",
-			salary: "10000",
-			commissionPct: "12345",
-			department: "2",
-			manager: "2",
+			phoneNumber: userVariables.phoneNumber,
+			hireDate: userVariables.hireDate,
+			salary: userVariables.salary,
+			commissionPct: userVariables.commissionPct,
+			department: userVariables.department,
+			manager: userVariables.manager
 		});
 
 		await employeesPage.verifyEmployee(
@@ -52,7 +53,7 @@ test("I should be able to update the information of an existing employee and ver
 		firstName: firstName,
 		lastName: lastName,
 		email: t.ctx.email,
-		phoneNumber: "+46769099901",
+		phoneNumber: userVariables.phoneNumber,
 	});
 
 	await mainPage.openEntity("employee");
@@ -78,7 +79,7 @@ test("I should be able to delete an employee from the system and verify that the
 		firstName: firstName,
 		lastName: lastName,
 		email: t.ctx.email,
-		phoneNumber: "+46769099901",
+		phoneNumber: userVariables.phoneNumber,
 	});
 
 	const employeeId = createdEmployee.id;

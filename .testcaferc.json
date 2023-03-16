@@ -5,6 +5,12 @@
 	"userVariables": {
 		"baseURL": "http://localhost:8080/",
 		"username": "user",
-		"password": "user"
+		"password": "user",
+		"phoneNumber": "+46769099901",
+		"hireDate": "2021-03-15T11:50",
+		"salary": "10000",
+		"commissionPct": "12345",
+		"department": "2",
+		"manager": "2"
 	}
 }
