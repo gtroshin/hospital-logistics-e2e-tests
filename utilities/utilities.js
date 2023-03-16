@@ -10,18 +10,25 @@ export function randomString(length=10, chars='abcdefghijklmnopqrstuvwxyzABCDEFG
 }
 
 export async function scrollDownUntilExists(targetElement) {
-  const isTargetVisible = async () => (await targetElement.exists);
+	const isTargetVisible = async () => (await targetElement.exists);
 
-  const scrollDown = ClientFunction(() => {
-      window.scrollBy(0, 1000); // Increase the scroll amount for bigger leaps
-  });
+	const scrollDown = ClientFunction(() => {
+		window.scrollBy(0, 1000); // Increase the scroll amount for bigger leaps
+	});
 
-  while (!(await isTargetVisible())) {
-      await scrollDown();
-      await t.wait(300); // Adjust the waiting time if needed
-  }
+	const maxScrollTime = 25000; // Maximum scroll time in milliseconds
+	const startTime = Date.now();
 
-  await t.scrollIntoView(targetElement)
+	while (!(await isTargetVisible()) && Date.now() - startTime < maxScrollTime) {
+		await scrollDown();
+		await t.wait(300); // Adjust the waiting time if needed
+	}
+
+	if (await isTargetVisible()) {
+		await t.scrollIntoView(targetElement);
+	} else {
+		throw new Error('Target element not found within the maximum scroll time.');
+	}
 }
 
 export function baseUrl() {

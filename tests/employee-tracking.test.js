@@ -13,7 +13,7 @@ fixture `As a manager`
         await mainPage.signIn(username(), password());
     });
 
-test('I should be able to add a new employee to the system with all required information and verify it', async t => {
+test.meta('opt', 'true')('I should be able to add a new employee to the system with all required information and verify it', async t => {
     await mainPage.openEntity('employee')
 
     await employeesPage.createEmployee({

@@ -12,7 +12,7 @@ fixture `As a manager`
         await mainPage.signIn(username(), password());
     });
 
-test('I should be able to add a new medicine with all required information and verify it in the system (database)', async t => {
+test.meta('opt', 'true')('I should be able to add a new medicine with all required information and verify it in the system (database)', async t => {
     await mainPage.openEntity('medicine')
 
     await medicinePage.createMedicine(
