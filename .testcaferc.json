@@ -1,10 +1,10 @@
 {
-    "pageLoadTimeout": 5000,
-    "assertionTimeout": 10000,
-    "selectorTimeout": 10000,
-    "userVariables": {
-        "baseURL": "http://localhost:8080/",
-        "username": "user",
-        "password": "user"
-    }
+	"pageLoadTimeout": 5000,
+	"assertionTimeout": 10000,
+	"selectorTimeout": 10000,
+	"userVariables": {
+		"baseURL": "http://localhost:8080/",
+		"username": "user",
+		"password": "user"
+	}
 }
