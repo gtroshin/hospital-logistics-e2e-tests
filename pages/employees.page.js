@@ -17,10 +17,11 @@ class Employees {
         this.managerSelector = Selector('#field_manager');
         this.saveButton = Selector('#save-entity');
         this.cancelSaveButton = Selector('#cancel-save');
+        this.deleteForm = Selector('form[name="deleteForm"]');
+        this.confirmDeleteEmployeeButton = this.deleteForm.find('#jhi-confirm-delete-employee');
         this.rowContaining = (firstName, lastName, email) => XPathSelector(
             `//tr[./td[contains(., '${firstName}')] and ./td[contains(., '${lastName}')] and ./td[contains(.,'${email}')]]`);
-        this.rowActon = ({email, action}) => XPathSelector(
-            `//tr[./td[contains(., '${email}')]]//button[./span[@jhitranslate='entity.action.${action}']]`);
+        this.rowAction = ({email, action}) => Selector('td').withText(email).parent('tr').find(`button:has(span[jhitranslate='entity.action.${action}'])`);
     }
 
     async hireDate(field, text) {
@@ -83,7 +84,7 @@ class Employees {
     async updateEmployee({email, firstName, lastName, phoneNumber, save=true}) {
         // element becomes hidden or is removed from the DOM between the visibility check and the click action
         // to avoid this issue, we can store the result in const
-        const editButton = this.rowActon({email: email, action: 'edit'}) 
+        const editButton = this.rowAction({email: email, action: 'edit'}) 
 
         await t
             .expect(editButton.exists).ok({ timeout: 10000 })
@@ -114,6 +115,19 @@ class Employees {
                 .expect(this.saveButton.visible).ok()
                 .click(this.saveButton)
         }
+    }
+
+    async deleteEmployee({email}) {
+        const deleteButton = this.rowAction({email: email, action: 'delete'})
+
+        await t
+            .expect(deleteButton.exists).ok()
+            .expect(deleteButton.visible).ok()
+            .hover(deleteButton)
+            .click(deleteButton)
+            .expect(this.deleteForm.visible).ok()
+            .expect(this.confirmDeleteEmployeeButton.visible).ok()
+            .click(this.confirmDeleteEmployeeButton)
     }
     
 

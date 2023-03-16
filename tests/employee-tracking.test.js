@@ -1,8 +1,8 @@
-import { baseUrl, username, password, randomString, addNewEmployee, scrollDownUntilExists } from "../utilities/utilities";
+import { baseUrl, username, password, randomString, addNewEmployee, getEmployeeById } from "../utilities/utilities";
 import mainPage from "../pages/main.page";
 import employeesPage from "../pages/employees.page";
 
-fixture `As the manager`
+fixture `As a manager`
     .page `${baseUrl()}`
     .beforeEach(async t => {
         t.ctx.random = randomString();
@@ -55,4 +55,32 @@ test('I should be able to update the information of an existing employee and ver
     });
 
     await employeesPage.verifyEmployee(newFirstName, lastName, t.ctx.email);
+});
+
+test('I should be able to delete an employee from the system and verify that the employee is removed from the system', async t => {
+    let firstName = 'API' + t.ctx.firstName
+    let lastName = 'API' + t.ctx.lastName
+
+    // Programmatically create a new employee
+    const createdEmployee = await addNewEmployee({
+        firstName: firstName,
+        lastName: lastName,
+        email: t.ctx.email,
+        phoneNumber: '+46769099901'
+    })
+
+    const employeeId = createdEmployee.id;
+
+    await mainPage.openEntity('employee')
+
+    await employeesPage.verifyEmployee(firstName, lastName, t.ctx.email);
+
+    await employeesPage.deleteEmployee({
+        email: t.ctx.email
+    });
+
+    const statusCode = await getEmployeeById(employeeId);
+
+    await t
+        .expect(statusCode).eql(404, 'Employee was not deleted')
 });

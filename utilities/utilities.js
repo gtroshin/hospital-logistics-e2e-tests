@@ -75,7 +75,7 @@ export async function addNewEmployee({
     manager=1
 }) {
   try {
-    const token = await getBearerToken('user', 'user');
+    const token = await getBearerToken(username(), password());
 
     const employeeData = {
       firstName: firstName,
@@ -107,8 +107,31 @@ export async function addNewEmployee({
     };
 
     const createdEmployee = await createEmployee(token, employeeData);
-    await t.eval(() => location.reload(true));
+
+    return createdEmployee;
   } catch (error) {
     console.error('Error:', error.message);
   }
+}
+
+export async function getEmployeeById(employeeId) {
+	try {
+		const token = await getBearerToken(username(), password());
+
+		const response = await axios.get(`${baseUrl()}api/employees/${employeeId}`, {
+		headers: {
+			'Accept': 'application/json',
+			'Authorization': `Bearer ${token}`
+		}
+		});
+
+		return response.status;
+	} catch (error) {
+			if (error.response) {
+			return error.response.status;
+		} else {
+			console.error('Error:', error.message);
+			return null;
+		}
+	}
 }
