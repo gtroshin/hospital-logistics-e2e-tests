@@ -119,10 +119,10 @@ export async function getEmployeeById(employeeId) {
 		const token = await getBearerToken(username(), password());
 
 		const response = await axios.get(`${baseUrl()}api/employees/${employeeId}`, {
-		headers: {
-			'Accept': 'application/json',
-			'Authorization': `Bearer ${token}`
-		}
+			headers: {
+				'Accept': 'application/json',
+				'Authorization': `Bearer ${token}`
+			}
 		});
 
 		return response.status;
@@ -133,5 +133,30 @@ export async function getEmployeeById(employeeId) {
 			console.error('Error:', error.message);
 			return null;
 		}
+	}
+}
+
+export async function getMedicinesByNameAndDescription(medicineName, medicineDescription) {
+	try {
+		const token = await getBearerToken(username(), password());
+
+		const response = await axios.get(`${baseUrl()}api/medicines`, {
+			headers: {
+				'Accept': 'application/json',
+				'Authorization': `Bearer ${token}`
+			}
+		});
+
+		const matchedMedicines = response.data.filter(medicine => {
+			return (
+				medicine.medicineName === medicineName &&
+				medicine.medicineDescription === medicineDescription
+			);
+		});
+
+		return matchedMedicines.length;
+	} catch (error) {
+		console.error('Error:', error.message);
+		return 0;
 	}
 }
