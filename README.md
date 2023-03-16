@@ -19,6 +19,14 @@ In the project root folder, to install dependencies run:
 
     yarn
 
+Start a new local web service to run tests on (it will take few minutes to start up):
+
+    docker run --rm --privileged --name web-service -p 8080:8080 -it quay.io/evooq/qa-challenge:latest
+
+As an alternative, you can run tests against the stage environment by providing a URL:
+
+    export SITE_URL=<site_url>
+
 To run/debug tests locally with Chrome, in the project root folder run:
 
     yarn test-local
