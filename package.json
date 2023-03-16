@@ -5,7 +5,7 @@
   "scripts": {
     "test-local": "testcafe \"chrome:emulation:width=1500;height=900 --no-default-browser-check --lang=en-US --disable-plugins --disable-infobars\" -c 1 --debug-on-fail tests/*",
     "test-headless-chrome": "testcafe \"chrome:headless:emulation:width=1500;height=900 --no-default-browser-check --lang=en-US --disable-plugins --disable-infobars\" -r spec,xunit:test_results/report.xml -c 3 -S -s screenshots_of_fails --video videos_of_fails --video-options failedOnly=true tests/*",
-    "test-headless-firefox": "testcafe \"firefox:headless\" -r spec,xunit:test_results/report.xml -c 3 -S -s screenshots_of_fails --video videos_of_fails --video-options failedOnly=true tests/*"
+    "test-headless-firefox": "testcafe \"firefox:headless --window-size=1500x900\" -r spec,xunit:test_results/report.xml -c 3 -S -s screenshots_of_fails --video videos_of_fails --video-options failedOnly=true tests/*"
   },
   "dependencies": {
     "axios": "0.21.1",

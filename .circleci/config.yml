@@ -1,0 +1,112 @@
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.4.0
+
+references:
+  docker_container_config: &docker_container_config
+    docker:
+      - image: cimg/node:16.16.0-browsers
+    resource_class: large
+
+  restore_yarn_cache: &restore_yarn_cache
+    restore_cache:
+      name: Restore Yarn Package Cache
+      keys:
+        - yarn-packages-v1-{{ checksum "yarn.lock" }}
+
+  save_yarn_cache: &save_yarn_cache
+    save_cache:
+      name: Save Yarn Package Cache
+      key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+      paths:
+        - ~/.cache/yarn
+
+  yarn_dependencies: &yarn_dependencies
+    run:
+      name: Install Dependencies
+      command: yarn install --frozen-lockfile
+
+jobs:
+  e2e-tests-firefox:
+    <<: *docker_container_config
+    steps:
+      - browser-tools/install-firefox
+      - checkout
+      - *restore_yarn_cache
+      - *yarn_dependencies
+      - *save_yarn_cache
+
+      - run:
+          name: Run tests with Firefox
+          command: yarn test-headless-firefox
+
+      - run:
+          name: Prepare JUnit XML results
+          command: |
+            mkdir -p /home/circleci/test_results/TestCafe_HeadlessFirefox
+            cp /home/circleci/project/test_results/report.xml /home/circleci/test_results/TestCafe_HeadlessFirefox/report.xml
+          when: always
+
+      - store_test_results:
+          path: /home/circleci/test_results
+
+      - store_artifacts:
+          path: /home/circleci/project/screenshots_of_fails
+          destination: screenshots_of_fails
+
+      - store_artifacts:
+          path: /home/circleci/project/videos_of_fails
+          destination: videos_of_fails
+
+  e2e-tests-chrome:
+    <<: *docker_container_config
+    steps:
+      - browser-tools/install-chrome
+      - checkout
+      - *restore_yarn_cache
+      - *yarn_dependencies
+      - *save_yarn_cache
+
+      - run:
+          name: Run tests with Chrome
+          command: yarn test-headless-chrome
+
+      - run:
+          name: Prepare JUnit XML results
+          command: |
+            mkdir -p /home/circleci/test_results/TestCafe_HeadlessChrome
+            cp /home/circleci/project/test_results/report.xml /home/circleci/test_results/TestCafe_HeadlessChrome/report.xml
+          when: always
+
+      - store_test_results:
+          path: /home/circleci/test_results
+
+      - store_artifacts:
+          path: /home/circleci/project/screenshots_of_fails
+          destination: screenshots_of_fails
+
+      - store_artifacts:
+          path: /home/circleci/project/videos_of_fails
+          destination: videos_of_fails
+
+  
+workflows:
+  version: 2
+
+  tests:
+    jobs:
+      - e2e-tests-firefox
+      - e2e-tests-chrome
+
+  nightly-tests:
+    triggers:
+      - schedule:
+          cron: '30 0 * * *'
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - e2e-tests-firefox
+      - e2e-tests-chrome
